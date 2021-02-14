@@ -26,6 +26,7 @@ class OpenCVConan(ConanFile):
         "with_eigen": [True, False],
         "with_webp": [True, False],
         "with_gtk": [True, False],
+        "with_cuda": [True, False],
         "gtk_version": [2,3],
         "with_quirc": [True, False]
     }
@@ -42,6 +43,7 @@ class OpenCVConan(ConanFile):
         "with_eigen": True,
         "with_webp": True,
         "with_gtk": True,
+        "with_cuda": False,
         "gtk_version" : 2,
         "with_quirc": True
     }
@@ -186,7 +188,7 @@ class OpenCVConan(ConanFile):
         self._cmake.definitions["WITH_ADE"] = False
         self._cmake.definitions["WITH_ARAVIS"] = False
         self._cmake.definitions["WITH_CLP"] = False
-        self._cmake.definitions["WITH_CUDA"] = False
+        self._cmake.definitions["WITH_CUDA"] = self.options.with_cuda
         self._cmake.definitions["WITH_CUFFT"] = False
         self._cmake.definitions["WITH_CUBLAS"] = False
         self._cmake.definitions["WITH_NVCUVID"] = False
@@ -435,6 +437,20 @@ class OpenCVConan(ConanFile):
                 {"target": "opencv_superres",            "lib": "superres",            "requires": ["opencv_core", "opencv_flann", "opencv_imgproc", "opencv_features2d", "opencv_imgcodecs", "opencv_videoio", "opencv_calib3d", "opencv_video", "opencv_ximgproc", "opencv_optflow"] + eigen()},
                 {"target": "opencv_tracking",            "lib": "tracking",            "requires": ["opencv_core", "opencv_flann", "opencv_imgproc", "opencv_ml", "opencv_plot", "opencv_features2d", "opencv_imgcodecs", "opencv_calib3d", "opencv_datasets", "opencv_video"] + eigen()},
                 {"target": "opencv_stereo",              "lib": "stereo",              "requires": ["opencv_core", "opencv_flann", "opencv_imgproc", "opencv_ml", "opencv_plot", "opencv_features2d", "opencv_imgcodecs", "opencv_calib3d", "opencv_datasets", "opencv_video", "opencv_tracking"] + eigen()},
+            ])
+
+        if self.options.with_cuda:
+            add_components([
+                {"target": "opencv_cudaarithm",          "lib": "cudaarithm",          "requires": ["opencv_core", "opencv_imgproc"] + eigen()},
+                {"target": "opencv_cudabgsegm",          "lib": "cudabgsegm",          "requires": ["opencv_core", "opencv_imgproc"] + eigen()},
+                {"target": "opencv_cudacodec",           "lib": "cudacodec",           "requires": ["opencv_core", "opencv_imgproc"] + eigen()},
+                {"target": "opencv_cudafeatures2d",      "lib": "cudafeatures2d",      "requires": ["opencv_core", "opencv_imgproc"] + eigen()},
+                {"target": "opencv_cudafilters",         "lib": "cudafilters",         "requires": ["opencv_core", "opencv_imgproc"] + eigen()},
+                {"target": "opencv_cudaimgproc",         "lib": "cudaimgproc",         "requires": ["opencv_core", "opencv_imgproc"] + eigen()},
+                {"target": "opencv_cudaobjdetect",       "lib": "cudaobjdetect",       "requires": ["opencv_core", "opencv_imgproc"] + eigen()},
+                {"target": "opencv_cudaoptflow",         "lib": "cudaoptflow",         "requires": ["opencv_core", "opencv_imgproc"] + eigen()},
+                {"target": "opencv_cudastereo",          "lib": "cudastereo",          "requires": ["opencv_core", "opencv_imgproc"] + eigen()},
+                {"target": "opencv_cudawarping",         "lib": "cudawarping",         "requires": ["opencv_core", "opencv_imgproc"] + eigen()}
             ])
 
         if self.settings.os == "Windows":
